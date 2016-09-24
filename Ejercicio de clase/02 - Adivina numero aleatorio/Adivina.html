@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title>Adivinar</title>
+		
+		<style>
+		#contenedor{
+			margin:auto;
+			text-align:center
+		}
+		
+		#micuenta{
+			font-size:50px;
+			padding: 40px 0px;
+		}
+		
+		input[type=submit] {
+			width: 7%;
+			background-color: #99ccff;
+			color: white;
+			font-weight: bold;
+			padding: 10px 0;
+			border: none;
+			border-radius: 50px;
+			cursor: pointer;
+			margin-top:7px;
+			margin-bottom:-2px;
+		}
+		
+		#titulo{
+			margin: 20px 0px;
+		}
+		#intentos{
+			margin: 20px 0px;
+		}
+		
+		
+		</style>
+		<script>
+			var intentos = 0;
+			
+			//Mete un numero aleatorio redondeado a la alta en la variable aleatorio.
+			var aleatorio = Math.floor((Math.random()*10)+1);
+			
+			function iniciar(){
+				//Coje el numero introducido en el formualario
+				var cuenta = 10;
+				
+				// pone los intentos a cero
+				document.getElementById("intentos").innerHTML="Intentos: 0";
+				intentos=0;
+				
+				//Muestra el numero aleatorio por consola
+				console.log(aleatorio);
+				
+				//se ejecuta en bucle hasta que no haya un clearInterval
+				var intervalo =setInterval(function(){
+					//coje el numero introducido en el formulario y lo mete en la variable numeroIntroducido
+					var numeroIntroducido = document.getElementById("numero").value
+					
+					//Mientras que cuenta se mayor que 0 o nuemro introducido sea diferente a aleatorio y cuenta mayor que 0
+					if((cuenta >= 0) || ((numeroIntroducido != aleatorio) && (cuenta > 0))){
+						
+						//Va decrementando la cuenta
+						document.getElementById("micuenta").innerHTML=cuenta;
+						cuenta--;//decrementa
+						
+						//si el numero numeroIntroducido es igual a el aleatorio muestra que has acertado y cierra el intervalo
+						if(numeroIntroducido == aleatorio){
+							document.getElementById("mensaje").innerHTML="Has acertado";
+							clearInterval(intervalo);
+						}
+						
+					} else {
+						clearInterval(intervalo);//cierra el intervalo
+					}
+					//si la cuenta es igual a 0 y el numeroIntroducido es diferente al aleatorio muestra que has perdido.
+					if((cuenta == 0) && (numeroIntroducido != aleatorio)) {
+							document.getElementById("mensaje").innerHTML="Has perdido";
+					}
+
+				}, 1000);//decrementa cada segundo
+			}
+			
+			
+			function fallos(){
+				intentos++;
+				//coje el numero introducido en el formulario y lo mete en la variable numeroIntroducido
+				var numeroIntroducido = document.getElementById("numero").value
+				
+				if(numeroIntroducido == aleatorio){
+					intentos--;
+				}
+				//muestra el numero de intentos
+				document.getElementById("intentos").innerHTML="Intentos: " + intentos;
+			}
+
+		</script>
+	</head>
+
+	<body>
+		<div id="contenedor">
+			
+			<div id="micuenta">10</div>
+			
+			<input type="submit" id="Empezar" onclick="iniciar()" value="Empezar">
+			
+			<h1 id="titulo">Adivina</h1>
+			
+			<input type="number" name="numero" id="numero" size="24" maxlength="40" >		
+			<input type="submit" id="okbtn" onclick="fallos()" value="Aceptar">
+			
+			<div id="intentos">Intentos: 0</div>
+			
+			<div id="mensaje"></div>
+		</div>
+		
+	</body>
+	
+</html>

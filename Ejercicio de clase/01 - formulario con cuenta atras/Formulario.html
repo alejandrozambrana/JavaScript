@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title></title>
+	<script>
+		
+		function iniciar(){
+			//Coje el numero introducido en el formualario
+			var cuenta = document.getElementById("numero").value;
+			
+			var intervalo =setInterval(function(){
+				//Mientras que cuenta se mayor que 0
+				if(cuenta >= 0){
+					
+					//Cambia el texto de capa micuenta
+					document.getElementById("micuenta").innerHTML=cuenta;
+					if(cuenta == 0){
+						document.getElementById("micuenta").innerHTML="BOOOMM!!";
+					}
+					cuenta--;//decrementa
+					
+				} else {
+					clearInterval(intervalo);
+				}
+
+			}, 1000);
+		}
+		
+	</script>
+	</head>
+
+	<body>
+		
+		<label for="numero">Introduce un numero:</label>
+		<input type="number" name="numero" id="numero" size="24" maxlength="40" ></br>		
+		<input type="submit" id="okbtn" onclick="iniciar()" value="Enviar">
+		
+		<div id="micuenta"></div>
+		<div id="mensaje"></div>
+	
+	</body>
+	
+</html>

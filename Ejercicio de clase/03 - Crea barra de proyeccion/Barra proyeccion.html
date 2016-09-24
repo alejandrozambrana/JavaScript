@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title>Barra proyeccion</title>
+		<style>
+			#barra{
+				height:50px;
+			}
+		</style>
+
+		<script>
+			var contador = 1;
+			var longitud;
+			var tiempo;
+			var intervalo;
+			
+			//funcion principal
+			function iniciar(){
+				
+				//iguala las variables a lo introducido por teclado 
+				longitud = document.getElementById("longitud").value;
+				tiempo = document.getElementById("tiempo").value;
+				
+				//se ejecuta en bucle hasta que no haya un clearInterval
+				intervalo=setInterval(function(){
+					
+					//incrementa el porcentaje y la barra
+					if(contador <= longitud){
+						document.getElementById("porcentaje").innerHTML=contador + " %";
+						contador++;
+						//Cambiamos color de la capa barra		
+						document.getElementById("barra").style.background=document.getElementById("color").value;
+						document.getElementById("barra").style.width=contador + "px";
+						
+					} else {
+						clearInterval(intervalo);
+					}
+					
+				}, tiempo);//incrementa en el tiempo añadido
+			}
+
+		</script>
+	</head>
+
+	<body>
+		<div id="contenedor">
+			Longitud: 
+			<input type="number" name="longitud" id="longitud" size="20" maxlength="40" ></br>
+			
+			Color:
+			<input type="color" name="color" id="color"></br>
+			
+			Tiempo * Pixel:
+			<input type="number" name="tiempo" id="tiempo" size="20" maxlength="40" ></br>
+			
+			<button id="aceptar" onClick="iniciar()">Aceptar</button><br>
+			
+			<div id="porcentaje">0%</div></br>
+			
+			<div id="barra"></div>
+			
+		</div>
+		
+	</body>
+	
+</html>
