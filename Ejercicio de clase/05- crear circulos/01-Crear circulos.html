@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title>Bolitas</title>
+		<style>
+			#contenedor{
+				width:800px;
+				height:600px;
+				position:absolute;	
+			}
+
+			.bubble{
+				position:absolute;
+				border-radius:50%;
+			}
+		</style>
+
+		<script>
+			//contador de las capas creadas
+			var contador_capas =0;
+		
+			function creabubble(){
+				
+				//crea capa
+				var circulo = document.createElement("div");
+				
+				//Se le asigna una clase
+				circulo.className = "bubble";
+				
+				//Pone la posicion aleatoria
+				var arriba = Math.floor(Math.random()*600);
+				circulo.style.top = arriba + "px";
+				
+				var izquierda = Math.floor(Math.random()*800);
+				circulo.style.left = izquierda + "px";
+				
+				//tamaño de la capa
+				var tamano = Math.floor(Math.random()*100)+10;
+				circulo.style.width = tamano + "px";
+				circulo.style.height = tamano + "px";
+				
+				//color aleatorio
+				var color = circulo.style.backgroundColor="rgb(" + Math.floor(Math.random()*255) + "," 
+				+ Math.floor(Math.random()*255) + "," + Math.floor(Math.random()*255) + ")";
+				
+				//Le asigno un valor=0 que usare para 
+				//contador interno
+				circulo.value = 0;
+				
+				//Asignamos un nuevo id a la nueva capa
+				contador_capas ++;		
+				circulo.id = "capa" + contador_capas;
+				
+				//Le asigno el onclick
+				//circulo.onclick=eliminabubble;
+				circulo.setAttribute("onclick","eliminaBurbuja(this)");
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(circulo);
+				
+			}	
+			
+			//Elimina la capa que se lo pasa como this
+			function eliminaBurbuja(micapita){
+				//this es el objeto al que le he hecho onclick
+				//parentNode es su capa contenedora
+				//como para eliminar un elemento tenemos que 
+				//llamar a su padre this.parentNode
+				//a su padre hay que especificarle que objeto hijo
+				//borramos que es this removechild(this)
+				micapita.parentNode.removeChild(micapita);
+			}	
+			
+			function limpiar(){
+				var todascapas= document.querySelectorAll(".bubble");
+				
+				for (var i=0;i<todascapas.length;i++){
+					todascapas[i].parentNode.removeChild(todascapas[i]);   
+				}
+			}
+			
+
+		</script>
+	</head>
+
+	<body>
+		<button id="boton" onclick="creabubble()">Crear</button>
+		<button id="limpia" onclick="limpiar()">Limpiar</button>
+		<div id="contenedor"></div>
+		
+	</body>
+	
+</html>

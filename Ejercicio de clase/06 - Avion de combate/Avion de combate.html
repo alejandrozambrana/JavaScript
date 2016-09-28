@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title>Avion de combate</title>
+		
+		<style>
+		*{
+			margin:0px;
+			overflow-x:hidden;
+			overflow-y:hidden;
+		}
+		
+		#contenedor{
+			width:1680px;
+			height:800px;
+			position:absolute;
+			background-color:grey;
+		}
+		
+		.avion{	
+			top:20px;
+			left:10px;
+			width:200px;
+			height:150px;
+			background-image:url(dora.png);
+			background-repeat:no-repeat;
+			background-size:80px 80px;
+			position:absolute;
+		}
+		
+		.bomba{
+			top:20px;
+			left:10px;
+			width:100px;
+			height:80px;
+			background-image:url(botas.png);
+			background-repeat:no-repeat;
+			background-size:110px 90px;
+			position:absolute;
+		}
+		
+		.edificios{
+			top:700px;
+			left:10px;
+			width:115px;
+			height:105px;
+			background-image:url(edificio.png);
+			background-repeat:no-repeat;
+			background-size:110px 100px;
+			position:absolute;
+		}
+		</style>
+		
+		<script>
+			var contador_capas = 0;
+			var contador_capas_bomba = 0;
+				
+			function comienza(){
+				
+				//crea capa del avion
+				var avion =document.createElement("div");
+				
+				//se le añade una clase
+				avion.className ="avion";
+				
+				//llama a la funcion de crear edificios
+				creaEdificios()
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(avion);
+				
+				//Asignamos un nuevo id a la nueva capa
+				avion.id = "capa" + contador_capas;
+				
+				//incrementa el contador
+				contador_capas++;
+				
+				//activa el movimiento
+				mueve(avion);
+				
+				//Le asigno el onclick
+				//circulo.onclick=eliminabubble;
+				avion.setAttribute("onclick", "tirarBomba(this)");
+					
+			}
+			
+			//hace el movimiento del avion
+			function mueve(avion){
+				//Mira en que posicion esta el avion y lo mete en una variable
+				var izquierda = avion.offsetLeft;
+				var id = setInterval(function (){//Empieza un intervalo
+					if(izquierda < 1600){//comprueba que la posicion del avion sea menos a 1680px
+						izquierda++;//incrementa la posicion del avion
+						avion.style.left = izquierda + 'px'; //cambia la posicion de avion
+					} else{
+						clearInterval(id);//cierra el intervalo
+						avion.parentNode.removeChild(avion)
+						comienza();//Vuelve a aparecer el avion por el principio
+					}
+				},8);//el intervalo se repite cada 8 milisegundos
+			}
+			
+			function tirarBomba(capa){
+				var posicionLeft = capa.offsetLeft;
+				
+				//crea la capa de la bomba 
+				var bomba =document.createElement("div");
+				
+				//tira la bomba en la posicion en la que este el avion
+				bomba.style.left = posicionLeft + 'px';
+				
+				//se le añade una clase
+				bomba.className ="bomba";
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(bomba);
+				
+				//Asignamos un nuevo id a la nueva capa
+				bomba.id = "capa" + contador_capas_bomba;
+				
+				//incrementa el contador
+				contador_capas_bomba++;
+				
+				//activa el movimiento
+				mueveBomba(bomba);
+				
+			}
+			//mueve la bomba
+			function mueveBomba(bomba){
+			//Mira en que posicion esta la bomba y lo mete en una variable
+				var arriba = bomba.offsetTop;
+				var id = setInterval(function (){//Empieza un intervalo
+					if(arriba < 720){
+						arriba++;
+						bomba.style.top = arriba + 'px'; 
+					} else {
+						clearInterval(id);
+						bomba.style.backgroundImage= "url(explosion.png )";//cuando la bomba llega a 760px la cambia por una explosion
+					}
+					creaEdificios();
+				},8);
+			}
+			
+			//esta funcion crea los edificios
+			function creaEdificios(){
+			
+				var id = setInterval(function (){
+					if(contador_capas <= 5 ){
+						//crea capa del avion
+						var edificios =document.createElement("div");
+						
+						//se le añade una clase
+						edificios.className ="edificios";
+						
+						//Pone la posicion aleatoria				
+						var izquierda = Math.floor(Math.random()*1600);
+						edificios.style.left = izquierda + "px";
+						
+						//Asignamos un nuevo id a la nueva capa
+						contador_capas ++;		
+						edificios.id = "capa" + contador_capas;
+						
+						/*console.log(bomba.id);
+						var leftbomba = bomba.offsetLeft;
+            var leftedificios = edificios.offsetLeft;
+						
+						if((leftbomba == leftedificios) || (leftbomba <= leftedificios + 10) ||(leftbomba >= leftedificios - 10)){
+							edificios.parentNode.removeChild(edificios)
+						}*/
+						
+						//Lo añado al contenedor	
+						document.getElementById("contenedor").appendChild(edificios);
+					} else {
+						clearInterval(id);
+					}
+				});
+			}
+			
+		</script>
+	</head>
+
+	<body onload="comienza()">
+		<div id="contenedor"></div>
+	
+	</body>
+	
+</html>
