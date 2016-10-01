@@ -15,7 +15,15 @@
 			width:1680px;
 			height:800px;
 			position:absolute;
-			background-color:grey;
+			background-color:#33ccff;
+		}
+		
+		#datos{
+			margin-top:810px;
+			margin-left:10px;
+			width:200px;
+			height:300px;
+			position:absolute;
 		}
 		
 		.avion{	
@@ -55,6 +63,8 @@
 		<script>
 			var contador_capas = 0;
 			var contador_capas_bomba = 0;
+			var nivel = 1;
+			var tiempoPixel = 8;
 				
 			function comienza(){
 				
@@ -70,11 +80,8 @@
 				//Lo añado al contenedor	
 				document.getElementById("contenedor").appendChild(avion);
 				
-				//Asignamos un nuevo id a la nueva capa
-				avion.id = "capa" + contador_capas;
-				
-				//incrementa el contador
-				contador_capas++;
+				//Asignamos nombre a la capa
+				avion.id = "capa0";
 				
 				//activa el movimiento
 				mueve(avion);
@@ -85,12 +92,14 @@
 					
 			}
 			
+			
+			
 			//hace el movimiento del avion
 			function mueve(avion){
 				//Mira en que posicion esta el avion y lo mete en una variable
 				var izquierda = avion.offsetLeft;
 				var id = setInterval(function (){//Empieza un intervalo
-					if(izquierda < 1600){//comprueba que la posicion del avion sea menos a 1680px
+					if(izquierda < 1600){//comprueba que la posicion del avion sea menos a 1600px
 						izquierda++;//incrementa la posicion del avion
 						avion.style.left = izquierda + 'px'; //cambia la posicion de avion
 					} else{
@@ -98,34 +107,44 @@
 						avion.parentNode.removeChild(avion)
 						comienza();//Vuelve a aparecer el avion por el principio
 					}
-				},8);//el intervalo se repite cada 8 milisegundos
+				},tiempoPixel);//el intervalo se repite cada 8 milisegundos
+			}
+			var contador_num_bombas = 6;
+			
+			function tirarBomba(avion){
+				var posicionLeft = avion.offsetLeft;
+				if(contador_num_bombas != 0){
+					//crea la capa de la bomba 
+					var bomba =document.createElement("div");
+				
+					//tira la bomba en la posicion en la que este el avion
+					bomba.style.left = posicionLeft + 'px';
+				
+					//se le añade una clase
+					bomba.className ="bomba";
+				
+					//Lo añado al contenedor	
+					document.getElementById("contenedor").appendChild(bomba);
+				
+					//Asignamos un nuevo id a la nueva capa
+					bomba.id = "capa" + contador_capas_bomba;
+				
+					//incrementa el contador
+					contador_capas_bomba++;
+				
+					//activa el movimiento
+					mueveBomba(bomba);
+					
+					//decrementa el numero de bombas
+					contador_num_bombas--;
+					
+					document.getElementById("datos").innerHTML= "NºBombas:" + contador_num_bombas + "<br>Edificios destruidos: " + num_edi_destruidos + "<br>Nivel: " + nivel;
+				}
+
 			}
 			
-			function tirarBomba(capa){
-				var posicionLeft = capa.offsetLeft;
-				
-				//crea la capa de la bomba 
-				var bomba =document.createElement("div");
-				
-				//tira la bomba en la posicion en la que este el avion
-				bomba.style.left = posicionLeft + 'px';
-				
-				//se le añade una clase
-				bomba.className ="bomba";
-				
-				//Lo añado al contenedor	
-				document.getElementById("contenedor").appendChild(bomba);
-				
-				//Asignamos un nuevo id a la nueva capa
-				bomba.id = "capa" + contador_capas_bomba;
-				
-				//incrementa el contador
-				contador_capas_bomba++;
-				
-				//activa el movimiento
-				mueveBomba(bomba);
-				
-			}
+			var todasBombas=0;
+			
 			//mueve la bomba
 			function mueveBomba(bomba){
 			//Mira en que posicion esta la bomba y lo mete en una variable
@@ -133,55 +152,114 @@
 				var id = setInterval(function (){//Empieza un intervalo
 					if(arriba < 720){
 						arriba++;
-						bomba.style.top = arriba + 'px'; 
+						bomba.style.top = arriba + 'px';
 					} else {
+						if((contador_num_bombas >= 0) && (num_edi_destruidos == 5)){
+							tiempoPixel = tiempoPixel - 2;
+							contador_num_bombas = 5;
+							num_edi_destruidos = 0 ;
+							nivel++;
+							contador_capas = 0;
+							document.getElementById("datos").innerHTML= "NºBombas:" + contador_num_bombas + "<br>Edificios destruidos: " + num_edi_destruidos + "<br>Nivel: " + nivel;
+							borraBombas(bomba);
+						}
+					//activa la explosion y elimina edificios
+						explosion(bomba);
 						clearInterval(id);
-						bomba.style.backgroundImage= "url(explosion.png )";//cuando la bomba llega a 760px la cambia por una explosion
 					}
-					creaEdificios();
-				},8);
+				},7);
 			}
 			
-			//esta funcion crea los edificios
-			function creaEdificios(){
+			var arrayLeft = [];//guarda la posicionLeft de los edificios
 			
+			//esta funcion crea los edificios
+			function creaEdificios(bomba){
+				var maximo = 320;
+				var minimo = 50;
+				var prueba= 0;
+				var aleatorio = 0;
+				
 				var id = setInterval(function (){
-					if(contador_capas <= 5 ){
-						//crea capa del avion
-						var edificios =document.createElement("div");
+					if(contador_capas < 5 ){
+						
+						//crea la capa de la bomba 
+						var edificios = document.createElement("div");
 						
 						//se le añade una clase
 						edificios.className ="edificios";
 						
-						//Pone la posicion aleatoria				
-						var izquierda = Math.floor(Math.random()*1600);
-						edificios.style.left = izquierda + "px";
-						
 						//Asignamos un nuevo id a la nueva capa
-						contador_capas ++;		
-						edificios.id = "capa" + contador_capas;
+						contador_capas++;		
+						edificios.id = "edificio" + contador_capas;
 						
-						/*console.log(bomba.id);
-						var leftbomba = bomba.offsetLeft;
-            var leftedificios = edificios.offsetLeft;
-						
-						if((leftbomba == leftedificios) || (leftbomba <= leftedificios + 10) ||(leftbomba >= leftedificios - 10)){
-							edificios.parentNode.removeChild(edificios)
-						}*/
-						
+						//Pone la posicion aleatoria para que los edicios no cuincidan
+						aleatorio = Math.floor(getRand(minimo, maximo));
+						edificios.style.left = aleatorio + "px";
+						arrayLeft[contador_capas] = aleatorio;//mete en el array la posicion izquierda de los edificios
+						minimo = maximo + 100;
+						maximo += 280;
+			
 						//Lo añado al contenedor	
 						document.getElementById("contenedor").appendChild(edificios);
+
 					} else {
 						clearInterval(id);
 					}
 				});
 			}
 			
+			var idEdificio =0;
+			var todosEdificios=0;
+			var num_edi_destruidos = 0;
+			//funcion de la explosion de la bomba
+			function explosion(bomba){
+				bomba.style.backgroundImage= "url(explosion.png )";//cuando la bomba llega a 760px la cambia por una explosion
+				var posicionBombaIzq = bomba.offsetLeft;//metemos en una variable la posicion de la bomba
+				todosEdificios = document.querySelectorAll(".edificios");//Se selecciona todos las clases llamadas .edificios. crea una lista(array)
+				
+				for(var i = 1; i <= 5; i++){
+
+					if((posicionBombaIzq  >= arrayLeft[i] -50) && (posicionBombaIzq <= arrayLeft[i] + 70)){
+						
+						idEdificio = "edificio" + i;//mete el id en la variable
+						
+						//borra el edificio
+						for (var x = 0; x < 5 ;x++){
+						
+							if(todosEdificios[x].id == idEdificio){//comprueba que los ides sean iguales
+							todosEdificios[x].parentNode.removeChild(todosEdificios[x]); //borra edificio	
+							num_edi_destruidos++;
+							document.getElementById("datos").innerHTML= "NºBombas:" + contador_num_bombas + "<br>Edificios destruidos: " + num_edi_destruidos + "<br>Nivel: " + nivel;
+							} 
+						}
+					}
+				}
+			}
+			
+			//borra las explosiones
+			function borraBombas(bomba) {
+				var todasbombas= document.querySelectorAll(".bomba");////Se selecciona todos las clases llamadas .bomba. crea una lista(array)
+				
+				for (var i=0;i<todasbombas.length;i++){
+					todasbombas[i].parentNode.removeChild(todasbombas[i]);   //borra bomba
+				}
+				creaEdificios();
+      }
+			
+			//funcion para crear numero aleatorio
+			function getRand(min, max) {
+            return Math.random() * (max - min) + min;
+      }
 		</script>
 	</head>
 
 	<body onload="comienza()">
 		<div id="contenedor"></div>
+		<div id="datos">
+			<p>NºBombas: 6 </p>
+			<p>Edificios destruidos: 0 </p>
+			<p>Nivel: 1 </p>
+		</div>
 	
 	</body>
 	
