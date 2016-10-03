@@ -1,0 +1,385 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title>Carrera de coches</title>
+		
+		<style>
+		*{
+			margin: 0px;
+		}
+		
+		body{
+			background-color:#333333;
+		}
+		
+		#contenedor{
+			width:1660px;
+			height:800px;
+			position:absolute;
+			background-image: url(imagenes/carretera.jpg);
+			background-size:1680px 800px;
+		}
+		
+		.coche{
+			top:20px;
+			left:10px;
+			width:150px;
+			height:100px;
+			background-repeat:no-repeat;
+			background-image: url(imagenes/coche.png);
+			background-size: 150px 100px;
+			position:absolute;
+		}
+		
+		h1{
+			text-align:center;
+			color: white;
+		}
+		
+		#participantes{
+			width:130px;
+			text-align:center;
+			margin-left:300px;
+			margin-top:10px;
+			margin-bottom:20px;
+			background-color:white;
+			padding:10px;
+			border-radius:10%;
+			display:inline;
+			float: left;
+			position:relative;
+		}
+		
+		#apuesta{
+			width:300px;
+			text-align:center;
+			margin-left:30px;
+			margin-top:10px;
+			margin-bottom:20px;
+			background-color:white;
+			padding:10px;
+			border-radius:10%;
+			display:inline;
+			float: left;
+			position:relative;
+		}
+		#clasificacion{
+			width:300px;
+			text-align:center;
+			margin-left:30px;
+			margin-top:10px;
+			margin-bottom:10px;
+			background-color:white;
+			padding:10px;
+			padding-bottom:50px;
+			border-radius:10%;
+			display:inline;
+			float: left;
+			position:relative;
+		}
+		
+		#carrera{
+			width:300px;
+			text-align:center;
+			margin-left:30px;
+			margin-top:20px;
+			padding:10px;
+			display:inline;
+			float: left;
+			position:relative;
+		}
+		
+		.clear {
+			clear: both;
+		}
+		
+		#mensaje{
+			
+			text-align:center;
+			color: white;
+			margin-top: 10px;
+			margin-bottom: 10px;
+			height: 30px;
+		}
+		
+		#empezarCarrera{
+			margin-bottom:15px;
+		}
+		
+		</style>
+		
+		<script>
+			var distanciaEntreCoches = 0;
+			var numeroDeCoches = 0;
+			var velocidades = [];
+			var dinero = 400;
+			var cocheApostado = 0;
+			var clasificacion = [];
+			var contadoClasificacion = 0;
+			
+			function deshabilitaBotones(){
+				//Deshabilito el boton de empezar carrera
+				document.getElementById("empezarCarrera").disabled = true;
+				
+				//Deshabilito el boton de apostar
+				document.getElementById("hacerApuesta").disabled = true;
+				
+				//Deshabilito el boton de reiniciar
+				document.getElementById("reiniciar").disabled = true;
+			}
+			
+			function comienza(){
+				//mete en esta variable el numero de coches que hay
+				numeroDeCoches = document.getElementById("numCoches").value;
+				
+				//le pone una velocidad aleatoria
+				for(var i = 0; i < numeroDeCoches; i++ ){
+					do{
+						velocidades[i] = Math.floor(Math.random()*10);//mete un numero aleatorio al array
+					}while(velocidades[i] == 0 || compruebaVelocidad(velocidades[i] , i));//lo hace mientras velocidad sea diferente a 0 o comprueba que la velocidad no este repetida decuelve false si no esta repetida
+				}	
+				
+				//llama a la funcion de crear coche
+				creaCoche();
+				
+				//Deshabilito el boton de poner coches
+        document.getElementById("ponerCoches").disabled = true;
+				//Deshabilito el boton de reiniciar
+				document.getElementById("reiniciar").disabled = true;
+				//Deshabilito el boton de reiniciar
+				document.getElementById("empezarCarrera").disabled = false;
+				//Deshabilito el boton de apostar
+				document.getElementById("hacerApuesta").disabled = false;
+			}
+			
+			function compruebaVelocidad(velocidad, contador){
+				var velocidadRepetida = false;
+
+				do {
+						contador--;
+						if (velocidad == velocidades[contador]) {
+								velocidadRepetida = true;//si la velocidad es igual lo iguala a true.
+						}
+				} while (!velocidadRepetida && contador > 0);//lo hace mientras velocidad sea igual a true y contador sea mayor a 0.
+				return velocidadRepetida;//devuelve true o false
+			}
+			
+			function creaCoche(){
+				for(var i = 1; i <= numeroDeCoches;i++){
+					//crea capa del coche
+					var coche =document.createElement("div");
+					
+					//se le añade una clase
+					coche.className ="coche";
+					
+					//Asignamos nombre a la capa
+					coche.id = "coche" +  i;
+					
+					//le pone numero al coche
+					coche.value = i;
+					
+					//pone velocidad
+					coche.alt = velocidades[i];
+					
+					//pone distancia entre coches de 100 px;
+					coche.style.top=distanciaEntreCoches + "px";
+					distanciaEntreCoches += 100;
+					
+					//Lo añado al contenedor	
+					document.getElementById("contenedor").appendChild(coche);
+					
+				}	
+			}
+			
+			function empezar(){
+				for(var i =1; i <= numeroDeCoches; i++){
+					var coche = "coche" + i;
+					moverCoches(document.getElementById(coche));
+				}
+			}
+
+			function moverCoches(coche){
+				//Deshabilito el boton de empezar carrera
+				document.getElementById("empezarCarrera").disabled = true;
+				//Mira en que posicion esta el coche y lo mete en una variable
+				var izquierda = coche.offsetLeft;
+				
+				var id = setInterval(function (){//Empieza un intervalo
+					if(izquierda < 1500){//comprueba que la posicion del coche sea menos a 1600px
+						izquierda++;//incrementa la posicion del coche
+						coche.style.left = izquierda + 'px'; //cambia la posicion de coche
+					} else{
+						clearInterval(id);//cierra el intervalo
+						clasificacion[contadoClasificacion] = coche.id;//mete en el array clasificacion la posiciones de los coches
+						contadoClasificacion++;
+						
+						muestraClasificacion(clasificacion[contadoClasificacion - 1]);
+						if(contadoClasificacion == 1){
+							compruebaApuesta(clasificacion[0]);
+						}
+					}
+				},coche.alt);//el intervalo se repite cada 8 milisegundos
+			}
+			var muestraClasi = [];
+			var contadorMuesClasi=0;
+			
+			function muestraClasificacion(clasificacion){
+				for(var i = 0; i < 1 ; i++){
+					muestraClasi[contadorMuesClasi] = clasificacion;//mete los coches en orden de llegada en un array
+				}
+				contadorMuesClasi++;
+				document.getElementById("posiciones").innerHTML = muestraClasi;//muestra clasificacion
+				//habilita el boton de reiniciar
+				document.getElementById("reiniciar").disabled = false;
+			}
+			
+			function apuesta(){
+				//mete en la variable la cantidad apostada
+				var dineroApostado = document.getElementById("cantidadApostada").value;
+				
+				if(dinero >= dineroApostado){
+					dinero = dinero - dineroApostado;//resta el dinero apostado
+					document.getElementById("dinero").innerHTML= "Disponible: " + dinero + "€";//actualiza el dinero
+					cocheApostado = "coche" + document.getElementById("cocheApostar").value//mete en la variable el coche apostado
+					//Deshabilito el boton de hacer apuestas
+					document.getElementById("hacerApuesta").disabled = true;
+				}
+			}
+			var ganacias = 0;
+			
+			function compruebaApuesta(ganador){
+				if(dinero > 0){//si dinero es menor a 0 no se juega
+					if(cocheApostado == ganador){//comprueba el coche apostado con el ganador)
+						document.getElementById("mensaje").innerHTML = "<h2>Enhorabuena has ganado</h2> ";
+						ganacias = document.getElementById("cantidadApostada").value * (numeroDeCoches-1)//multiplica lo apostado por el numero de participantes
+						dinero = dinero + ganacias;//añade el dinero ganado
+						document.getElementById("dinero").innerHTML= "Disponible: " + dinero + "€";//actualiza el dinero
+					} else {
+						document.getElementById("mensaje").innerHTML = "<h2>Lo siento has perdido</h2> ";
+					}
+				} else {
+					document.getElementById("mensaje").innerHTML = "<h2>No tienes Dinero.</h2> ";
+					//habilito el boton de poner coches
+					document.getElementById("ponerCoches").disabled = false;
+				}
+			}
+			
+			function reiniciar(){
+				//Borra todos los coches
+				for(var i = 1; i <= numeroDeCoches; i++){
+					var coche = "coche" + i;
+					document.getElementById(coche).parentNode.removeChild(document.getElementById(coche));//borra los coches
+				}
+				//habilito el boton de poner coches
+        document.getElementById("ponerCoches").disabled = false;
+				
+				//pone la clasificacion vacia
+				contadorMuesClasi = 0;
+				for(var x = 1; x <= numeroDeCoches; x++){
+					muestraClasi.splice(x,numeroDeCoches);//borra el contenido del array
+				}
+				document.getElementById("posiciones").innerHTML = " ";
+				
+				//habilito el boton de hacer apuestas
+				document.getElementById("hacerApuesta").disabled = false;
+				
+				contadoClasificacion=0;
+				
+				//pone la distrancia entre coches a 0
+				distanciaEntreCoches= 0;
+				
+				//quita mensaje
+				document.getElementById("mensaje").innerHTML = " ";
+				
+				//Deshabilito el boton de empezar carrera
+				document.getElementById("empezarCarrera").disabled = true;
+			}
+			
+		</script>
+	</head>
+
+	<body onload="deshabilitaBotones()">
+		<h1>Carrera de coches</h1>
+		
+		<div id="participantes">
+				<table>
+					<tr>
+						<td colspan="2">
+							<label for="numCoches">Numero de coches: </label>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<select id="numCoches">
+								<option value="2" selected>2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+							</select>
+						</td>
+						<td>
+							<button id="ponerCoches" onclick="comienza()">Crear</button>
+						</td>
+					</tr>
+				</table>
+		</div>
+		
+		<div id="apuesta">
+			<table>
+					<tr>
+						<td>
+							<label for="apostarPor">Apostar por: </label>
+						</td>
+						<td>
+							<select id="cocheApostar">
+								<option value="1" selected>1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="cantidad">Cantidad: </label>
+						</td>
+						<td>
+							<input type="number" name="cantidad" id="cantidadApostada" size="8" maxlength="40" required="required" >	
+						</td>
+					<tr>
+						<td>
+							<label id="dinero">Disponible: 400€ </label>
+						</td>
+					</tr>
+						<td colspan="2">
+							<button id="hacerApuesta" onclick="apuesta()">Apostar</button>
+						</td>
+					</tr>
+				</table>
+		</div>
+		
+		<div id="clasificacion">
+			<h2><u>CLASIFICACIÓN</u></h2></br>
+			<div id="posiciones">
+			</div>
+		</div>
+		
+		<div id="carrera">
+			<button id="empezarCarrera" onclick="empezar()">Empezar carrera</button></br>
+			<button id="reiniciar" onclick="reiniciar()">Reiniciar</button></br>
+		</div>
+		
+		<div class="clear"></div>
+		
+		<div id="mensaje">
+		</div>
+		
+		<div id="contenedor">
+			
+		</div>
+	
+	</body>
+	
+</html>
