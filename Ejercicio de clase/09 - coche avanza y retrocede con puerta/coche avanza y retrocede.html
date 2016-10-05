@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title>Carrera de coches</title>
+		
+		<style>
+
+			#contenedor{
+				width: 100%;
+				height: 100%;
+			}
+
+			#coche{
+				background-repeat:no-repeat;
+				background-image: url(imagenes/coche.png);
+				background-size: 150px 100px;
+				width: 150px;
+				height: 100px;
+				position: absolute;
+				top:360px;
+				left:0%;
+			}
+			
+			#puerta{
+				background-color: orange;
+				width: 50px;
+				height: 250px;
+				position: absolute;
+				top:197px;
+				left:700px;
+			}
+		
+		</style>
+		
+		<script>			
+		
+		var id;
+		var puertaAbierta = false;
+		
+			function avanzar(){
+				var coche = document.getElementById("coche");
+
+				//Mira en que posicion esta el coche y lo mete en una variable
+				var izquierda = coche.offsetLeft;
+				
+				id = setInterval(function (){//Empieza un intervalo
+					if(izquierda < 1500 && puertaAbierta){//comprueba que la posicion del coche sea menos a 1500px y la puerta este abierta
+						izquierda++;//incrementa la posicion del coche
+						coche.style.left = izquierda + 'px'; //cambia la posicion de coche
+					} else if (izquierda < 557 && !puertaAbierta){//comprueba que la posicion del coche sea menos a 557px y la puerte este cerrada
+						izquierda++;//incrementa la posicion del coche
+						coche.style.left = izquierda + 'px'; //cambia la posicion de coche
+					} else if((izquierda > 607 && !puertaAbierta) && (izquierda < 1500)) {//comprueba que izquierda sea mayor que 607 y la puerta este cerrada y izquierda sea menor de 1500
+						izquierda++;//incrementa la posicion del coche
+						coche.style.left = izquierda + 'px'; //cambia la posicion de coche
+					} else {
+						clearInterval(id);//cierra el intervalo
+					}
+				},8);//el intervalo se repite cada 8 milisegundos
+			}
+			
+			function parar(){
+				var coche = document.getElementById("coche");
+				
+				//Mira en que posicion esta el coche y lo mete en una variable
+				var izquierda = coche.offsetLeft;
+				
+				coche.style.left = izquierda + 'px'; //cambia la posicion de coche
+				clearInterval(id);//cierra el intervalo
+			}
+			
+			function retroceder(){
+				var coche = document.getElementById("coche");
+				
+				//Mira en que posicion esta el coche y lo mete en una variable
+				var izquierda = coche.offsetLeft;
+				
+				id = setInterval(function (){//Empieza un intervalo
+					if(izquierda > 0 && puertaAbierta){
+						izquierda--;//incrementa la posicion del coche
+						coche.style.left = izquierda + 'px'; //cambia la posicion de coche
+					} else if (izquierda > 750 && !puertaAbierta) {
+						izquierda--;//incrementa la posicion del coche
+						coche.style.left = izquierda + 'px'; //cambia la posicion de coche
+					} else if((izquierda < 750 && !puertaAbierta) && (izquierda > 0)) {
+						izquierda--;//incrementa la posicion del coche
+						coche.style.left = izquierda + 'px'; //cambia la posicion de coche
+					}else{
+						clearInterval(id);//cierra el intervalo
+					}
+				},8);//el intervalo se repite cada 8 milisegundos
+			}
+			
+			function abrirPuerta(){
+				var puerta = document.getElementById("puerta");
+				
+				//Mira en que posicion esta el coche y lo mete en una variable
+				var arriba = puerta.offsetTop;
+				
+				id = setInterval(function (){//Empieza un intervalo
+					if(arriba > 10){
+						arriba--;//incrementa la posicion del coche
+						puerta.style.top = arriba + 'px'; //cambia la posicion de coche
+						puertaAbierta = true; //pone la puerta como abierta
+					} else{
+						clearInterval(id);//cierra el intervalo
+					}
+				},6);//el intervalo se repite cada 6 milisegundos
+			}
+			
+			function cerrarPuerta(){
+				var puerta = document.getElementById("puerta");
+				
+				//Mira en que posicion esta el coche y lo mete en una variable
+				var arriba = puerta.offsetTop;
+				
+				id = setInterval(function (){//Empieza un intervalo
+					if(arriba < 200){//comprueba que la posicion del coche sea menos a 1600px
+						arriba++;//incrementa la posicion del coche
+						puerta.style.top = arriba + 'px'; //cambia la posicion de coche
+						puertaAbierta = false; //pone la puerta a cerrada
+					} else{
+						clearInterval(id);//cierra el intervalo
+					}
+				},6);//el intervalo se repite cada 6 milisegundos
+			}
+			
+		</script>
+	</head>
+
+	<body>
+		<button id="avanzar" onclick="avanzar()">Avanzar</button>
+		<button id="Retroceder" onclick="retroceder()">Retroceder</button>
+		<button id="parar" onclick="parar()">Parar</button>
+		<button id="AbrirPuerta" onclick="abrirPuerta()">Abrir puerta</button>
+		<button id="cerrarPuerta" onclick="cerrarPuerta()">Cerrar Puerta</button>
+
+		<div id="contenedor">
+			<div id="coche"></div>
+			<div id="puerta"></div>
+		</div>
+	</body>
+	
+</html>
