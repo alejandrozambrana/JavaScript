@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title>Carrera de coches</title>
+		
+		<style>
+			#contenedor{
+				height:800px;
+				background-color:green;
+			}
+			#lineaCentral{
+				position:absolute;
+				left:800px;
+				width:10px;
+				background-color:white;
+			}
+			.jugador{
+				position:absolute;
+				width:10px;
+				height:10px;
+				background-color:red;
+			}
+		
+		</style>
+		
+		<script>	
+		
+			var intervalo;
+			var contador = 0;
+			var numeroJugadores1 = 0;
+			var numeroJugadores2 = 0;
+			
+			
+			function crearCampo(){
+				
+				//se ejecuta en bucle hasta que no haya un clearInterval
+				intervalo=setInterval(function(){
+
+					if(contador <= 1600){
+						contador++;
+						document.getElementById("contenedor").style.width=contador + "px";
+					} else {
+						clearInterval(intervalo);
+						
+							contador = 0;
+							//crea linea central
+							intervalo=setInterval(function(){
+
+								if(contador < 800){
+									contador++;
+									document.getElementById("lineaCentral").style.height=contador + "px";
+								} else {
+									clearInterval(intervalo);
+								}
+							}, 5);
+						
+					}
+				}, 5);
+
+			}
+			
+			var contadorid = 1;
+		
+			function anadirJugador(){
+				numeroJugadores1 = document.getElementById("equipo1").value; 
+				numeroJugadores2 = document.getElementById("equipo2").value; 
+				for(var i = 0; i < numeroJugadores1; i++){
+					//crea capa jugador
+					var jugador =document.createElement("div");
+					
+					//se le añade una clase
+					jugador.className ="jugador";
+					
+					jugador.value = 0;
+					
+					//Asignamos nombre a la capa
+					jugador.id = "jugador" + contadorid;
+					jugador.alt= contadorid;
+					contadorid++;
+					
+					jugador.style.top = Math.floor(Math.random()*750) + "px";
+					jugador.style.left = Math.floor(Math.random()*750) + "px";
+					
+					//Lo añado al contenedor	
+					document.getElementById("contenedor").appendChild(jugador);
+					
+					jugador.setAttribute("onclick","aumentaValor(this)")
+				}
+				
+				for(var i = 0; i < numeroJugadores2; i++){
+					//crea capa jugador
+					var jugador =document.createElement("div");
+					
+					//se le añade una clase
+					jugador.className ="jugador";
+					
+					jugador.value = 0;
+					
+					//Asignamos nombre a la capa
+					jugador.id = "jugador" + contadorid;
+					jugador.alt= contadorid;
+					contadorid++;
+					
+					jugador.style.top = Math.floor(Math.random()*750)+10 + "px";
+					jugador.style.left = Math.floor(Math.random()*750)+850 + "px";
+					
+					//Lo añado al contenedor	
+					document.getElementById("contenedor").appendChild(jugador);
+					
+					jugador.setAttribute("onclick","aumentaValor(this)")
+					
+				}
+			}
+			function aumentaValor(jugador){
+				jugador.value++;
+				document.getElementById("valorJugador").innerHTML="Num Jugador: " + jugador.alt + "</br> Valor: " + jugador.value;
+			}
+		</script>
+	</head>
+
+	<body onload="crearCampo()">
+
+		<div id="contenedor">
+			<div id="lineaCentral"></div>
+		</div>
+		<label for="equipo1">Jugadores equipo 1 </label>
+		<input type="number" name="equipo1" id="equipo1" size="8" maxlength="40" required="required" >	
+		<label for="equipo2">Jugadores equipo 2 </label>
+		<input type="number" name="equipo2" id="equipo2" size="8" maxlength="40" required="required" >	
+		<button id="anadirJugador" onclick="anadirJugador()">Añadir al campo</button>
+		<div id="valorJugador">Num Jugador: 0</br>
+		valor: 0
+		</div>
+	</body>
+	
+</html>

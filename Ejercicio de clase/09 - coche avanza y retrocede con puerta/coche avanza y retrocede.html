@@ -36,6 +36,7 @@
 		<script>			
 		
 		var id;
+		var id2;
 		var puertaAbierta = false;
 		
 			function avanzar(){
@@ -98,13 +99,13 @@
 				//Mira en que posicion esta el coche y lo mete en una variable
 				var arriba = puerta.offsetTop;
 				
-				id = setInterval(function (){//Empieza un intervalo
+				id2 = setInterval(function (){//Empieza un intervalo
 					if(arriba > 10){
 						arriba--;//incrementa la posicion del coche
 						puerta.style.top = arriba + 'px'; //cambia la posicion de coche
 						puertaAbierta = true; //pone la puerta como abierta
 					} else{
-						clearInterval(id);//cierra el intervalo
+						clearInterval(id2);//cierra el intervalo
 					}
 				},6);//el intervalo se repite cada 6 milisegundos
 			}
@@ -115,13 +116,13 @@
 				//Mira en que posicion esta el coche y lo mete en una variable
 				var arriba = puerta.offsetTop;
 				
-				id = setInterval(function (){//Empieza un intervalo
+				id2 = setInterval(function (){//Empieza un intervalo
 					if(arriba < 200){//comprueba que la posicion del coche sea menos a 1600px
 						arriba++;//incrementa la posicion del coche
 						puerta.style.top = arriba + 'px'; //cambia la posicion de coche
 						puertaAbierta = false; //pone la puerta a cerrada
 					} else{
-						clearInterval(id);//cierra el intervalo
+						clearInterval(id2);//cierra el intervalo
 					}
 				},6);//el intervalo se repite cada 6 milisegundos
 			}

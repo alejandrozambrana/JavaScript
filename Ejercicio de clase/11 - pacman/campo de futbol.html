@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title>Pacman</title>
+		
+		<style>
+			#contenedor{
+				width:1000px;
+				height:600px;
+				background-color:black;
+			}
+			
+			.pacman{
+				position:absolute;
+				width:40px;
+				height:40px;
+				background-image: url(images/pacman.png);
+				z-index:3;
+			}
+			
+			.fantasma{
+				position:absolute;
+				width:40px;
+				height:40px;
+				background-image: url(images/ghost.png);
+				z-index:4;
+			}
+			
+			.mensaje{
+				position:absolute;
+				top:300px;
+				left:450px;
+				width:110px;
+				height:40px;
+				text-align:center;
+				border: 1px solid black;
+				padding-top:20px;
+				background-color:white;
+				z-index:5;
+				font-weight:bold;
+			}
+			
+			.cherry{
+				position:absolute;
+				width:40px;
+				height:40px;
+				background-image: url(images/cherry.png);
+				z-index:2;
+			
+			}
+		
+		</style>
+		
+		<script>	
+		
+			var izquierdaPacman = 0;
+			var arribaPacman = 0;
+			var velocidad = 50;
+			var nivel = 1;
+		
+			function empezar(){
+				
+				velocidad = 50;
+				nivel = 1;
+				
+				document.getElementById("nivel").innerHTML = "Nivel: " + nivel;
+				
+				var todascapas= document.querySelectorAll("#contenedor div");
+				
+				for (var i=0;i<todascapas.length;i++){
+					todascapas[i].parentNode.removeChild(todascapas[i]);   
+				}
+				
+				//Deshabilito el boton de empezar 
+				document.getElementById("empezar").disabled = true;
+			
+				crearPacman();
+				crearFantasma();
+			}
+		
+			function crearPacman(){
+				
+				//crea capa pacman
+				var pacman =document.createElement("div");
+				
+				//se le añade una clase
+				pacman.className ="pacman";
+				
+				//Asignamos nombre a la capa
+				pacman.id = "pacmanId";
+				
+				izquierdaPacman = Math.floor(Math.random()*900)+50;
+				arribaPacman = Math.floor(Math.random()*500)+50;
+				
+				pacman.style.top = arribaPacman + "px";
+				pacman.style.left = izquierdaPacman + "px";
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(pacman);
+			
+				pacman.setAttribute("onclick","liberarse(this)");
+			}
+			
+			function crearFantasma(){
+				
+				//crea capa pacman
+				var fantasma =document.createElement("div");
+				
+				//se le añade una clase
+				fantasma.className ="fantasma";
+				
+				//Asignamos nombre a la capa
+				fantasma.id = "fantasmaId";
+				
+				fantasma.style.top = Math.floor(Math.random()*500)+50 + "px";
+				fantasma.style.left = Math.floor(Math.random()*900)+50 + "px";
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(fantasma);
+				
+				moverFantasma(fantasma);
+			
+			}
+			
+			function moverFantasma(fantasma){
+			
+				//Mira en que posicion esta el fantasma y lo mete en una variable
+				var izquierda = fantasma.offsetLeft;
+				var arriba = fantasma.offsetTop;
+				
+				var id = setInterval(function (){//Empieza un intervalo
+					
+					if(izquierda < izquierdaPacman){//comprueba la posicion del fantasma
+						izquierda++;
+						fantasma.style.left = izquierda + 'px'; 
+					} else if (izquierda > izquierdaPacman){
+						izquierda--;
+						fantasma.style.left = izquierda + 'px';	
+					} else if( arriba < arribaPacman){
+						arriba++;
+						fantasma.style.top = arriba + 'px';
+					} else if (arriba > arribaPacman){
+						arriba--;
+						fantasma.style.top = arriba + 'px';
+					} else {
+						clearInterval(id);//cierra el intervalo
+						
+						if(arriba == arribaPacman && izquierda == izquierdaPacman){
+							//crea capa pacman
+							var mensaje =document.createElement("div");
+							
+							//se le añade una clase
+							mensaje.className ="mensaje";
+							
+							mensaje.id = "mensajeId";
+							
+							document.getElementById("contenedor").appendChild(mensaje);
+							
+							document.getElementById("mensajeId").innerHTML = "Game Over!";
+							
+							//habilito el boton de empezar 
+							document.getElementById("empezar").disabled = false;
+						} 						
+					}
+				},velocidad--);//el intervalo se repite cada 50 milisegundos
+			}
+			
+			function liberarse(pacman){
+				nivel++;
+				document.getElementById("nivel").innerHTML = "Nivel: " + nivel;
+				
+				crearCherrys();
+				
+				izquierdaPacman = Math.floor(Math.random()*900)+50;
+				arribaPacman = Math.floor(Math.random()*500)+50;
+				
+				pacman.style.top = arribaPacman + "px";
+				pacman.style.left = izquierdaPacman + "px";
+				
+				velocidad = velocidad / nivel;
+				
+			}
+		
+			function crearCherrys(){
+				
+				//crea capa pacman
+				var cherry =document.createElement("div");
+				
+				//se le añade una clase
+				cherry.className ="cherry";
+				
+				//Asignamos nombre a la capa
+				cherry.id = "cherryId";
+				
+				cherry.style.top = arribaPacman + "px";
+				cherry.style.left = izquierdaPacman + "px";
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(cherry);
+			
+			}
+		
+		</script>
+	</head>
+
+	<body >
+		
+		<button id="empezar" onclick="empezar()">Empezar</button>
+		
+		<div id="nivel">Nivel: 1</div>
+		
+		<div id="contenedor">
+			
+		</div>
+	
+	</body>
+	
+</html>
