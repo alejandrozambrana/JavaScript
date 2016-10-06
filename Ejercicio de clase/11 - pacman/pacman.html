@@ -66,8 +66,10 @@
 				
 				document.getElementById("nivel").innerHTML = "Nivel: " + nivel;
 				
+				//mete todos los div del contenedor en un array.
 				var todascapas= document.querySelectorAll("#contenedor div");
 				
+				//elimina todos los div de contenedor
 				for (var i=0;i<todascapas.length;i++){
 					todascapas[i].parentNode.removeChild(todascapas[i]);   
 				}
@@ -90,6 +92,7 @@
 				//Asignamos nombre a la capa
 				pacman.id = "pacmanId";
 				
+				//pone posicion al pacman
 				izquierdaPacman = Math.floor(Math.random()*900)+50;
 				arribaPacman = Math.floor(Math.random()*500)+50;
 				
@@ -98,7 +101,8 @@
 				
 				//Lo añado al contenedor	
 				document.getElementById("contenedor").appendChild(pacman);
-			
+				
+				//funcion onclick
 				pacman.setAttribute("onclick","liberarse(this)");
 			}
 			
@@ -128,10 +132,15 @@
 				//Mira en que posicion esta el fantasma y lo mete en una variable
 				var izquierda = fantasma.offsetLeft;
 				var arriba = fantasma.offsetTop;
+				var compruebaVelocidad = velocidad; //iguala velocidad a comprueba velocidad
 				
 				var id = setInterval(function (){//Empieza un intervalo
 					
-					if(izquierda < izquierdaPacman){//comprueba la posicion del fantasma
+					//comprueba que velocidad sea diferente a comprueba velocidad y cierra intervalo y llama a la funcion para cambiar la velocidad por la nueva
+					if(velocidad != compruebaVelocidad){
+						clearInterval(id);
+						moverFantasma(fantasma);					
+					} else if(izquierda < izquierdaPacman){//comprueba la posicion del fantasma
 						izquierda++;
 						fantasma.style.left = izquierda + 'px'; 
 					} else if (izquierda > izquierdaPacman){
@@ -146,6 +155,7 @@
 					} else {
 						clearInterval(id);//cierra el intervalo
 						
+						//comprueba que el fantasma este encima del pacman y termina el juego con un mensaje de game over
 						if(arriba == arribaPacman && izquierda == izquierdaPacman){
 							//crea capa pacman
 							var mensaje =document.createElement("div");
@@ -163,11 +173,11 @@
 							document.getElementById("empezar").disabled = false;
 						} 						
 					}
-				},velocidad--);//el intervalo se repite cada 50 milisegundos
+				},velocidad);//pone velocidad al fantasma
 			}
 			
 			function liberarse(pacman){
-				nivel++;
+				nivel++; //aumenta el nivel cada vez que pinchas en el pacman
 				document.getElementById("nivel").innerHTML = "Nivel: " + nivel;
 				
 				crearCherrys();
@@ -178,6 +188,7 @@
 				pacman.style.top = arribaPacman + "px";
 				pacman.style.left = izquierdaPacman + "px";
 				
+				//aumenta la velocidad cada vez que subes de nivel dividiendola por el nivel
 				velocidad = velocidad / nivel;
 				
 			}
