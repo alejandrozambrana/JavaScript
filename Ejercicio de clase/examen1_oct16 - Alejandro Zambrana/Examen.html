@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8" />
+		<title>Examen</title>
+		
+		<style>
+			#contenedor{
+				width:1000px;
+				height:600px;
+				background-color:blue;
+				background-image: url(images/silueta.png);
+			}
+			
+			.edificio{
+				position:absolute;
+				width:150px;
+				height:600px;
+				background-image: url(images/building.png);
+				background-repeat: no-repeat;
+			}
+			
+			.spiderman{
+				position:absolute;
+				width:150px;
+				height:152px;
+				background-image: url(images/spiderman.png);
+				background-repeat: no-repeat;
+			}
+			
+			.greenGoblin{
+				position:absolute;
+				width:150px;
+				height:148px;
+				background-image: url(images/greengoblin.png);
+				background-repeat: no-repeat;
+			}
+			
+			.bomba{
+				position:absolute;
+				width:40px;
+				height:39px;
+				background-image: url(images/bomb.png);
+				background-repeat: no-repeat;
+			}
+			
+			.mensaje{
+				position:absolute;
+				top:300px;
+				left:450px;
+				width:110px;
+				height:40px;
+				text-align:center;
+				border: 1px solid black;
+				padding-top:20px;
+				background-color:white;
+				z-index:5;
+				font-weight:bold;
+			}
+		
+		</style>
+		
+		<script>	
+			
+		//variables del intervalo
+		var id;
+		var id2;
+		var nivel = 1;
+		
+		function cargar(){
+				
+			//Deshabilito los botones
+			document.getElementById("subir").disabled = true;
+			document.getElementById("parar").disabled = true;
+			document.getElementById("bajar").disabled = true;
+		
+		}
+		
+		function empezar(){
+			
+			//Deshabilito el boton de empezar 
+			document.getElementById("empezar").disabled = true;
+			
+			//habilito botones
+			document.getElementById("subir").disabled = false;
+			document.getElementById("parar").disabled = false;
+			document.getElementById("bajar").disabled = false;
+			
+			nivel = 1;
+			
+			//pinta el nivel
+			document.getElementById("nivel").innerHTML = "Nivel: " + nivel;
+				
+			//mete todos los div del contenedor en un array.
+			var todascapas= document.querySelectorAll("#contenedor div");
+			
+			//elimina todos los div de contenedor
+			for (var i=0;i<todascapas.length;i++){
+				todascapas[i].parentNode.removeChild(todascapas[i]);   
+			}
+			
+			crearEdificio();
+			crearSpiderman();
+			crearGreenGoblin();
+			
+		}
+		
+		function crearEdificio(){
+			
+				//crea capa edificio
+				var edificio =document.createElement("div");
+				
+				//se le añade una clase
+				edificio.className ="edificio";
+				
+				//Asignamos nombre a la capa
+				edificio.id = "edificioId";
+				
+				//aplica estilos a edificio
+				edificio.style.left = "10px";
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(edificio);
+		}
+		
+		function crearSpiderman(){
+			
+				//crea capa spiderman
+				var spiderman =document.createElement("div");
+				
+				//se le añade una clase
+				spiderman.className ="spiderman";
+				
+				//Asignamos nombre a la capa
+				spiderman.id = "spidermanId";
+				
+				//aplica estilos a spiderman
+				spiderman.style.left = "160px";
+				spiderman.style.top = Math.floor(Math.random()*448)+80 + "px";
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(spiderman);
+				
+		}
+
+		function crearGreenGoblin(){
+				
+				//crea capa greenGoblin
+				var greenGoblin =document.createElement("div");
+				
+				//se le añade una clase
+				greenGoblin.className ="greenGoblin";
+				
+				//Asignamos nombre a la capa
+				greenGoblin.id = "greenGoblinId";
+				
+				//aplica estilos a greengoblin
+				greenGoblin.style.left = "850px";
+				greenGoblin.style.top = Math.floor(Math.random()*448)+80 + "px";
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(greenGoblin);
+				
+				//funcion onclick
+				greenGoblin.setAttribute("onclick","bomba(this)");
+
+		}
+
+		function subirSpiderman(){
+			
+			//mete la cap del ide spidermanId en spiderman
+			var spiderman = document.getElementById("spidermanId");
+
+			//Mira en que posicion esta el spiderman y lo mete en una variable
+			var arriba = spiderman.offsetTop;
+			
+			//cierra intervalo de la bajada para que no haya problemas
+			clearInterval(id2);
+			
+			id = setInterval(function (){//Empieza un intervalo
+				if(arriba > 80) {
+					arriba--;
+					spiderman.style.top = arriba + 'px'; 
+				} else {
+					clearInterval(id);//cierra el intervalo
+				}
+			},8);//el intervalo se repite cada 8 milisegundos
+			
+		}
+		
+		function pararSpiderman(){
+			
+			//mete la cap del ide spidermanId en spiderman
+			var spiderman = document.getElementById("spidermanId");
+			
+			//Mira en que posicion esta el coche y lo mete en una variable
+			var arriba = spiderman.offsetTop;
+			
+			spiderman.style.Top = arriba + 'px'; //cambia la posicion de coche
+			clearInterval(id);//cierra el intervalo de subida
+			clearInterval(id2);//cierra el intervalo de bajada
+			
+		}
+		
+		function bajarSpiderman(){
+			
+			//mete la cap del ide spidermanId en spiderman
+			var spiderman = document.getElementById("spidermanId");
+
+			//Mira en que posicion esta el spiderman y lo mete en una variable
+			var arriba = spiderman.offsetTop;
+			clearInterval(id);//cierra intervalo de subida
+			
+			id2 = setInterval(function (){//Empieza un intervalo
+				if(arriba < 527) {
+					arriba++;
+					spiderman.style.top = arriba + 'px'; 
+				} else {
+					clearInterval(id2);//cierra el intervalo
+				}
+			},8);//el intervalo se repite cada 8 milisegundos
+		}
+		
+		function bomba(greenGoblin){
+			
+			//lanza un numero de bombas segun el nivel
+			for(var i = 0; i < nivel; i++){
+				
+				//crea capa spiderman
+				var bomba =document.createElement("div");
+				
+				//se le añade una clase
+				bomba.className ="bomba";
+				
+				//Asignamos nombre a la capa
+				bomba.id = "bombaId" + i;
+				
+				//aplica estilo a bomba
+				bomba.style.left = greenGoblin.offsetLeft + 30 + "px";
+				bomba.style.top = greenGoblin.offsetTop + 30 + "px";
+				
+				//Lo añado al contenedor	
+				document.getElementById("contenedor").appendChild(bomba);
+				
+				lanzaBomba(bomba);
+			}
+			
+		}
+		
+		function lanzaBomba(bomba){
+			
+			//mete la cap del ide spidermanId en spiderman
+			var spiderman = document.getElementById("spidermanId");
+			
+			//mete aqui la posicion de arriba de spiderman
+			var arribaSpiderman = spiderman.offsetTop;
+			
+			//mete la cap del ide edificioId en edificio 
+			var edificio = document.getElementById("edificioId");
+			
+			//mete la cap del ide greenGoblinId en greenGoblin
+			var greenGoblin = document.getElementById("greenGoblinId");
+			
+			//Mira en que posicion esta la bomba y lo mete en una variable
+			var arriba = bomba.offsetTop;
+			var izquierda = bomba.offsetLeft;
+			//crea posicion de arriba aleatoria
+			var arribaAleatoria = Math.floor(Math.random()*448)+80; 
+			
+			var id3 = setInterval(function (){//Empieza un intervalo
+				//para que no lanze bombas mientras a spiderman
+				greenGoblin.setAttribute("onclick","");
+				//Mira en que posicion esta la bomba y lo mete en una variable
+				var arribaSpiderman = spiderman.offsetTop;
+				
+				if(arriba < arribaAleatoria) {
+					izquierda--;
+					arriba++;
+					bomba.style.top = arriba + 'px';  
+					bomba.style.left = izquierda + 'px'; 
+				} else if (arriba > arribaAleatoria ){
+					izquierda--
+					arriba--;
+					bomba.style.top = arriba + 'px'; 
+					bomba.style.left = izquierda + 'px'; 
+				} else if (izquierda > 160){
+					izquierda--;
+					bomba.style.left = izquierda + 'px'; 
+				} else {
+					clearInterval(id3);//cierra el intervalo
+					
+					nivel++;
+					
+					//hace esto si la posicionLeft de la bomba es igual a 160 y la posicionTop es mayor o igual a la posicionTop -30 de spiderman y la posicionTop de la bomba es menor y igual a la posicionTop de spiderman -150
+					if(izquierda == 160 && arriba >= arribaSpiderman - 30 && arriba <= arribaSpiderman + 150){
+						
+						bomba.parentNode.removeChild(bomba); //borra bomba	
+						
+						if (nivel > 3){
+							nivel--;
+						}	
+
+						document.getElementById("nivel").innerHTML = "Nivel: " + nivel;
+						
+						//para que vuelva a lanzar bomba
+						greenGoblin.setAttribute("onclick","bomba(this)");
+					} else {
+						//pinta la explosion
+						bomba.style.backgroundImage= "url(images/explosion.png )";
+						bomba.style.top = 300 + 'px';
+						bomba.style.left = 75 + 'px';
+						
+						edificio.parentNode.removeChild(edificio);//borra edificio
+						
+						//crea mensaje
+						var mensaje =document.createElement("div");
+						
+						//se le añade una clase
+						mensaje.className ="mensaje";
+						
+						mensaje.id = "mensajeId";
+						
+						//añade mensaje al contenedor
+						document.getElementById("contenedor").appendChild(mensaje);
+						
+						//muestra mensaje
+						document.getElementById("mensajeId").innerHTML = "Game Over!";
+						
+						//habilito el boton de empezar 
+						document.getElementById("empezar").disabled = false;
+						
+						//Deshabilito botones
+						document.getElementById("subir").disabled = true;
+						document.getElementById("parar").disabled = true;
+						document.getElementById("bajar").disabled = true;
+						
+					}
+					
+				}
+			},5);//el intervalo se repite cada 5 milisegundos
+			
+			//cambia la altura de greenGoblin cuando le haces click
+			greenGoblin.style.top = Math.floor(Math.random()*448)+80 + "px";
+			
+		}
+		
+		</script>
+	</head>
+
+	<body onload="cargar()">
+		
+		<button id="empezar" onclick="empezar()">Empezar</button>
+		<button id="subir" onclick="subirSpiderman()">Subir</button>
+		<button id="parar" onclick="pararSpiderman()">Parar</button>
+		<button id="bajar" onclick="bajarSpiderman()">Bajar</button>
+		
+		<p id="nivel">Nivel: 0</p>
+		
+		<div id="contenedor">
+			
+		</div>
+	
+	</body>
+	
+</html>
